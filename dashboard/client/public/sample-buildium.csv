@@ -1,0 +1,6 @@
+Name,Abbreviation,Address Line 1,Address Line 2,City,State,ZipCode,NumberOfUnits,PropertyType,YearBuilt,OperatingBankAccount
+Willow Park Apartments,WPA,300 Willow Park Ln,,Austin,TX,78745,8,Residential,2005,Main Operating
+Birchwood Townhomes,BWD,150 Birchwood Dr,,Pflugerville,TX,78660,4,Residential,2012,Main Operating
+Creekside Condos,CSC,720 Creekside Blvd,,Austin,TX,78703,6,Residential,2018,Main Operating
+Summit View,SV,400 Summit Rd,,Round Rock,TX,78664,1,Residential,2020,Main Operating
+The Overlook,OVR,88 Overlook Terrace,,Dripping Springs,TX,78620,2,Residential,2015,Main Operating

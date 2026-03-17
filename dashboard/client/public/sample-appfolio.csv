@@ -1,0 +1,13 @@
+Property Name,Unit Name,Unit Type,Bedrooms,Bathrooms,Unit Street Address 1,Unit Street Address 2,Unit City,Unit State,Unit Zip
+Maple Gardens,101,Residential,2,1,100 Maple St,Apt 101,Austin,TX,78701
+Maple Gardens,102,Residential,2,1,100 Maple St,Apt 102,Austin,TX,78701
+Maple Gardens,103,Residential,3,2,100 Maple St,Apt 103,Austin,TX,78701
+Maple Gardens,201,Residential,1,1,100 Maple St,Apt 201,Austin,TX,78701
+Maple Gardens,202,Residential,2,1,100 Maple St,Apt 202,Austin,TX,78701
+Pine Valley Homes,Main,Residential,3,2,250 Pine Valley Dr,,Round Rock,TX,78664
+Pine Valley Homes,Guest House,Residential,1,1,250 Pine Valley Dr,Guest House,Round Rock,TX,78664
+Elm Creek Villas,A,Residential,2,2,500 Elm Creek Rd,Unit A,Cedar Park,TX,78613
+Elm Creek Villas,B,Residential,2,2,500 Elm Creek Rd,Unit B,Cedar Park,TX,78613
+Elm Creek Villas,C,Residential,3,2,500 Elm Creek Rd,Unit C,Cedar Park,TX,78613
+Elm Creek Villas,D,Residential,2,1,500 Elm Creek Rd,Unit D,Cedar Park,TX,78613
+Lakefront Cabin,Main,Residential,4,3,12 Lakefront Way,,Dripping Springs,TX,78620
