@@ -22,6 +22,22 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// CORS – allow the marketing site (GitHub Pages) and local dev to call the API
+app.use((req, res, next) => {
+  const origin = req.headers.origin as string | undefined;
+  const allowed = ["https://dditzler.github.io", "http://localhost:5173", "http://localhost:3000"];
+  if (origin && allowed.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    res.sendStatus(204);
+    return;
+  }
+  next();
+});
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
