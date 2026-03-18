@@ -61,32 +61,88 @@
 
 // --- Form Handling ---
 (function(){
+  const CRM_URL = 'https://steadystate-production.up.railway.app';
+
   const form = document.getElementById('lead-form');
   const success = document.getElementById('form-success');
   if (!form || !success) return;
-  
-  form.addEventListener('submit', (e) => {
+
+  // Map door range labels to a representative integer for the CRM
+  const DOOR_MAP = { '1-20': 10, '21-50': 35, '51-100': 75, '101-200': 150, '200+': 200 };
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Collect data
+
+    const submitBtn = form.querySelector('[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting\u2026';
+
+    // Collect basic fields
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    
-    // Collect checkboxes
-    data.issues = Array.from(form.querySelectorAll('input[name="issues"]:checked')).map(c => c.value);
-    
-    // Collect funnel pills
-    data.property_types = Array.from(document.querySelectorAll('.funnel-pill.active')).map(p => p.dataset.value);
-    
-    // Log it (in production, POST to API)
-    console.log('Lead form submitted:', data);
-    
-    // Show success
-    form.style.display = 'none';
-    success.classList.add('visible');
-    
-    // Scroll to success
-    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Collect multi-value fields
+    const issues = Array.from(form.querySelectorAll('input[name="issues"]:checked')).map(c => c.value);
+    const propertyTypes = Array.from(document.querySelectorAll('.funnel-pill.active')).map(p => p.dataset.value);
+
+    // Build a notes string from the enriched form fields
+    const notesParts = [];
+    if (issues.length)        notesParts.push('Service issues: ' + issues.join(', '));
+    if (propertyTypes.length) notesParts.push('Property types: ' + propertyTypes.join(', '));
+
+    const doorCount = DOOR_MAP[data.doors] || null;
+    // Estimate MRR at ~$7/door/month, stored in cents
+    const estimatedValue = doorCount ? doorCount * 7 * 100 : null;
+
+    const payload = {
+      company:        data.first_name + ' ' + data.last_name,
+      contactName:    data.first_name + ' ' + data.last_name,
+      contactEmail:   data.email   || null,
+      contactPhone:   data.phone   || null,
+      doorCount,
+      region:         data.city_state  || null,
+      pmSoftware:     data.software    || null,
+      source:         'Website',
+      stage:          'lead',
+      priority:       'medium',
+      notes:          notesParts.join(' | ') || null,
+      tags:           propertyTypes.join(',') || null,
+      estimatedValue,
+    };
+
+    try {
+      const resp = await fetch(CRM_URL + '/api/leads', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || 'Server error ' + resp.status);
+      }
+
+      // Show success state
+      form.style.display = 'none';
+      success.classList.add('visible');
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    } catch (err) {
+      console.error('Form submission failed:', err);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+
+      // Show inline error message
+      let errEl = form.querySelector('.form-error');
+      if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.className = 'form-error';
+        errEl.style.cssText = 'color:#ef4444;font-size:0.875rem;margin-top:0.75rem;text-align:center;';
+        form.querySelector('.form-submit-row').insertAdjacentElement('afterend', errEl);
+      }
+      errEl.textContent = 'Something went wrong — please try again or email us directly.';
+    }
   });
 })();
 
