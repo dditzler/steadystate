@@ -17,6 +17,7 @@ import {
   Minus,
   ChevronDown,
 } from "lucide-react";
+import { AddLeadDialog } from "@/components/add-lead-dialog";
 
 const priorityConfig: Record<string, { icon: typeof Flame; color: string; label: string }> = {
   hot: { icon: Flame, color: "text-red-500", label: "Hot" },
@@ -37,7 +38,7 @@ const stageColorMap: Record<string, string> = {
 };
 
 function formatMRR(cents: number | null) {
-  if (!cents) return "—";
+  if (!cents) return "\u2014";
   return `$${(cents / 100).toLocaleString()}/mo`;
 }
 
@@ -126,12 +127,10 @@ export default function PipelinePage() {
     queryKey: ["/api/leads"],
   });
 
-  // Active pipeline stages (exclude won/lost for the main board)
   const activeStages = PIPELINE_STAGES.filter((s) => s.id !== "won" && s.id !== "lost");
   const closedStages = PIPELINE_STAGES.filter((s) => s.id === "won" || s.id === "lost");
   const allLeads = leads || [];
 
-  // KPIs
   const totalPipeline = allLeads
     .filter((l) => l.stage !== "won" && l.stage !== "lost")
     .reduce((sum, l) => sum + (l.estimatedValue || 0), 0);
@@ -154,9 +153,11 @@ export default function PipelinePage() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header + KPIs */}
       <div className="p-4 pb-3 border-b border-border/60">
-        <h1 className="text-lg font-semibold mb-3" data-testid="text-page-title">Sales Pipeline</h1>
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-lg font-semibold" data-testid="text-page-title">Sales Pipeline</h1>
+          <AddLeadDialog />
+        </div>
         <div className="flex gap-4 flex-wrap">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50">
             <span className="text-xs text-muted-foreground">Pipeline</span>
@@ -177,7 +178,6 @@ export default function PipelinePage() {
         </div>
       </div>
 
-      {/* Pipeline board */}
       <ScrollArea className="flex-1" orientation="horizontal">
         <div className="flex gap-3 p-4 min-w-max">
           {activeStages.map((stage) => (
