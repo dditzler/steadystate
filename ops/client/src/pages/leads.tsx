@@ -31,6 +31,7 @@ import {
   ChevronDown,
   ArrowUpDown,
 } from "lucide-react";
+import { AddLeadDialog } from "@/components/add-lead-dialog";
 
 const stageBadge: Record<string, string> = {
   lead: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
@@ -51,7 +52,7 @@ const priorityIcon: Record<string, { icon: typeof Flame; color: string }> = {
 };
 
 function formatMRR(cents: number | null) {
-  if (!cents) return "—";
+  if (!cents) return "\u2014";
   return `$${(cents / 100).toLocaleString()}`;
 }
 
@@ -89,7 +90,10 @@ export default function LeadsPage() {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 pb-3 border-b border-border/60">
-        <h1 className="text-lg font-semibold mb-3" data-testid="text-page-title">All Leads</h1>
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-lg font-semibold" data-testid="text-page-title">All Leads</h1>
+          <AddLeadDialog />
+        </div>
         <div className="flex gap-3 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -156,8 +160,8 @@ export default function LeadsPage() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-sm">{lead.contactName}</TableCell>
-                  <TableCell className="text-center tabular-nums text-sm">{lead.doorCount || "—"}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{lead.region || "—"}</TableCell>
+                  <TableCell className="text-center tabular-nums text-sm">{lead.doorCount || "\u2014"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{lead.region || "\u2014"}</TableCell>
                   <TableCell>
                     <Badge variant="secondary" className={`text-xs ${stageBadge[lead.stage] || ""}`}>
                       {stageObj?.label || lead.stage}
@@ -166,9 +170,9 @@ export default function LeadsPage() {
                   <TableCell className="text-center">
                     <PriIcon className={`w-4 h-4 mx-auto ${pri.color}`} />
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{lead.pmSoftware || "—"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{lead.pmSoftware || "\u2014"}</TableCell>
                   <TableCell className="text-right tabular-nums text-sm font-medium">{formatMRR(lead.estimatedValue)}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{lead.nextAction || "—"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{lead.nextAction || "\u2014"}</TableCell>
                 </TableRow>
               );
             })}
